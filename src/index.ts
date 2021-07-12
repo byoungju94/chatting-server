@@ -1,3 +1,7 @@
 import WebServer from "./WebServer";
 
-new WebServer().start();
+const storageConfiguration = "mysql";
+
+WebServer
+    .bootstrap(storageConfiguration)
+    .then(webserver => webserver.start());
