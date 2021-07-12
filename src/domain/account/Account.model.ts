@@ -1,7 +1,10 @@
-import { AutoIncrement, Column, CreatedAt, PrimaryKey, Table, UpdatedAt, Model, DataType } from "sequelize-typescript";
+import { AutoIncrement, Column, CreatedAt, DataType, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { AccountState } from "./AccountState";
 
-@Table
+@Table({
+    tableName: "tbl_account",
+    timestamps: true
+})
 export default class Account extends Model {
 
     @PrimaryKey
@@ -19,5 +22,8 @@ export default class Account extends Model {
     password: string;
 
     @Column(DataType.ENUM("ACTIVE", "LOCKED"))
-    state: AccountState
+    state: AccountState;
+
+    @CreatedAt
+    creationDate: Date;
 }

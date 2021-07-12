@@ -1,6 +1,10 @@
-import { Table, Model, PrimaryKey, AutoIncrement, Column, DataType } from "sequelize-typescript";
+import { Table, Model, PrimaryKey, AutoIncrement, Column, DataType, CreatedAt } from "sequelize-typescript";
+import { RoomState } from "./RoomState";
 
-@Table
+@Table({
+    tableName: "tbl_room",
+    timestamps: true
+})
 export default class Room extends Model {
 
     @PrimaryKey
@@ -9,5 +13,14 @@ export default class Room extends Model {
     id: number;
 
     @Column(DataType.STRING)
-    name: string
+    uuid: string;
+
+    @Column(DataType.STRING)
+    name: string;
+
+    @Column(DataType.ENUM("ACTIVE", "LOCKED"))
+    state: RoomState;
+
+    @CreatedAt
+    creationDate: Date;
 }

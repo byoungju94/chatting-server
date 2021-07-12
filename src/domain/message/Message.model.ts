@@ -1,6 +1,10 @@
-import { AutoIncrement, Column, DataType, Model, PrimaryKey, Table } from "sequelize-typescript";
+import { AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
+import Room from "../room/Room.model";
 
-@Table
+@Table({
+    tableName: "tbl_message",
+    timestamps: true
+})
 export default class Message extends Model {
 
     @PrimaryKey
@@ -11,10 +15,16 @@ export default class Message extends Model {
     @Column(DataType.STRING)
     content: string;
 
-    @Column(DataType.BIGINT)
-    accountId: number
+    @Column(DataType.STRING)
+    username: string;
 
-    @Column(DataType.BIGINT)
-    roomId: number
+    @CreatedAt
+    creationDate: Date;
 
+    @ForeignKey(() => Room)
+    @Column(DataType.BIGINT)
+    roomId: number;
+
+    @BelongsTo(() => Room)
+    room: Room;
 }

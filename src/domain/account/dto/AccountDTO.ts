@@ -2,8 +2,8 @@ import Account from "../Account.model";
 
 export default class AccountDTO {
 
-    private username: string;
-    private name: string;
+    private readonly username: string;
+    private readonly name: string;
 
     constructor(account: Account) {
         this.username = account.username;

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import StorageConfiguration from '../configuration/StorageConfiguration';
 import AccountController from './AccountController';
 
-describe("AccountController Tests", () => {
+describe("AccountControllerTests", () => {
     let mockRequest: Partial<Request>;
     let mockResponse: Partial<Response>;
     let responseObject = {};
@@ -15,6 +15,10 @@ describe("AccountController Tests", () => {
                 responseObject = result;
             })
         }
+    });
+
+    afterAll(() => {
+        console.log("test finished...");
     });
 
     test('200 - users', async () => {

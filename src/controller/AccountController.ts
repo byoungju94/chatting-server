@@ -16,7 +16,6 @@ export default class AccountController {
     public async get(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
         const accountDTO = await this.accountRepository.get(id);
-
         res.send(accountDTO);
     }
 
@@ -30,10 +29,12 @@ export default class AccountController {
         const id = req.params.id;
         const accountUpdateDTO = req.body as AccountUpdateDTO;
         await this.accountRepository.update(id, accountUpdateDTO);
+        res.send({result: "success"});
     }
 
     public async delete(req: Request, res: Response): Promise<void> {
         const id = req.params.id;
         await this.accountRepository.delete(id);
+        res.send({result: "success"});
     }
 }
