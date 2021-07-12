@@ -17,7 +17,7 @@ export default class StorageConfiguration {
                     username: 'root',
                     password: "contentwave",
                 });
-                sequelize.addModels([Account, Message, Room]);
+                sequelize.addModels([Account, Room]);
                 await sequelize.sync();
                 StorageConfiguration.connectionPool.set(tenant, sequelize);
             }

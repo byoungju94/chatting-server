@@ -35,4 +35,11 @@ export default class RoomController {
         res.statusCode = 200;
         res.send({result: "success"});
     }
+
+    public async active(req: Request, res: Response, next: NextFunction) {
+        const stateRooms = await this.roomRepository.stateActive();
+
+        res.statusCode = 200;
+        res.send(stateRooms);
+    }
 }

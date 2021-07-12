@@ -1,4 +1,5 @@
 import { Repository, Sequelize } from "sequelize-typescript";
+import { QueryTypes } from "sequelize";
 import RoomCreateDTO from "./dto/RoomCreateDTO";
 import RoomDTO from "./dto/RoomDTO";
 import RoomLockDTO from "./dto/RoomLockDTO";
@@ -30,12 +31,23 @@ export default class RoomRepository {
     }
 
     public async stateActive(): Promise<Array<RoomDTO>> {
-        return await this.repository.findAll({
-            attributes: ['uuid', 'name', 'state'],
-            group: ['uuid'],
-            having: {
-                state: RoomState.LOCKED
-            }
+        const native = `
+            SELECT uuid, name, state 
+            FROM tbl_room as t1
+                INNER JOIN (SELECT MAX(id) as id FROM tbl_room GROUP BY uuid) as t2
+                ON t1.id = t2.id
+            WHERE state = 'ACTIVE'
+        `;
+
+        return await this.repository.sequelize!.query(native, {
+            type: QueryTypes.SELECT
         });
+    }
+
+    public async clean(): Promise<void> {
+        await this.repository.destroy({
+            where: {},
+            truncate: true
+        })
     }
 }
