@@ -13,10 +13,11 @@ export default class MessageRepository {
 
     public async findByRoomId(roomId: number): Promise<Array<MessageDTO>> {
         return await this.repository.findAll({
+            attributes: ['content', 'username', 'createdAt'],
             where: {
                 roomId: roomId
             }
-        });
+        }) as Array<MessageDTO>;
     }
 
     public async save(messageSaveDTO: MessageSaveDTO): Promise<void> {

@@ -1,3 +1,4 @@
 export enum RoomState {
-    ACTIVE, LOCKED
+    ACTIVE = "ACTIVE",
+    LOCKED = "LOCKED"
 }

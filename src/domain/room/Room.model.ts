@@ -18,9 +18,6 @@ export default class Room extends Model {
     @Column(DataType.STRING)
     name: string;
 
-    @Column(DataType.ENUM("ACTIVE", "LOCKED"))
+    @Column(DataType.ENUM(RoomState.ACTIVE, RoomState.LOCKED))
     state: RoomState;
-
-    @CreatedAt
-    creationDate: Date;
 }

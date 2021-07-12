@@ -1,5 +1,7 @@
 import { Sequelize } from "sequelize-typescript";
 import Account from "../domain/account/Account.model";
+import Message from "../domain/message/Message.model";
+import Room from "../domain/room/Room.model";
 
 export default class StorageConfiguration {
 
@@ -15,7 +17,7 @@ export default class StorageConfiguration {
                     username: 'root',
                     password: "contentwave",
                 });
-                sequelize.addModels([Account]);
+                sequelize.addModels([Account, Message, Room]);
                 await sequelize.sync();
                 StorageConfiguration.connectionPool.set(tenant, sequelize);
             }
