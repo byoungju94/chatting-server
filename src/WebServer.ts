@@ -21,16 +21,16 @@ export default class WebServer {
         return new WebServer(sequelize);
     }
 
-    private middlewares(): void {
+    private registerMiddlewares(): void {
         this.webApplication.use(async (req, res, next) => {
             const tenant = req.headers.host?.toString();
-            const sequelize = await StorageConfiguration.initialize("mysql", "samsung"!!);
+            const sequelize = await StorageConfiguration.initialize("mysql", tenant!!);
             this.accountController = new AccountController(sequelize);
             next();
         });
     }
 
-    private routers(): void {
+    private registerRouters(): void {
         this.webApplication.get("/account/:id", this.accountController.join.bind(this.accountController));
         this.webApplication.post("/account/:id", this.accountController.leave.bind(this.accountController));
 
@@ -39,8 +39,8 @@ export default class WebServer {
     }
 
     public start(): express.Application {
-        this.middlewares();
-        this.routers();
+        this.registerMiddlewares();
+        this.registerRouters();
 
         this.webApplication.listen(8080, () => {
             console.log("start");

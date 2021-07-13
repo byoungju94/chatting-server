@@ -15,10 +15,16 @@ export default class SocketServer {
     }
 
     private addHandlers(): void {
-        this.io.on('connection', (socket: Socket) => {
+        const tenant = this.io.of(/^\/\w+$/);
+
+        tenant.use((socket: Socket, next) => {
+            next();
+        })
+
+        tenant.on('connection', (socket: Socket) => {
             for (const event in this.eventTypes) {
-                const socketHandlers = new SocketHandlers(socket, new (<any>window)[event.charAt(0).toUpperCase() + event.slice(1) + "Handler"]());
-                socket.on(event, socketHandlers.run.bind(socketHandlers));
+                const socketHandlers = new SocketHandlers(new (<any>window)[event.charAt(0).toUpperCase() + event.slice(1) + "Handler"]());
+                socket.on(event, socketHandlers.run.bind(socketHandlers, socket, socket.nsp.name));
             }
         });
     }

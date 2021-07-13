@@ -1,6 +1,6 @@
 import { Socket } from "socket.io";
 
-export default interface Handler {
+export default interface Handler<T> {
     
-    handle(socket: Socket): void;
+    handle(socket: Socket, repository: T, msg: any): void;
 }
