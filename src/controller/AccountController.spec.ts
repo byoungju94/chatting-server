@@ -41,9 +41,38 @@ describe("AccountControllerTests", () => {
     test('join a room', async () => {
         // given
         const newUuid = uuid();
+        
         await roomRepository.create({
             uuid: newUuid,
             name: "live chatting room test"
+        });
+
+        const joinAccount: AccountCreateDTO = {
+            username: "byoungju94",
+            name: "Byoungju Park",
+            roomUuid: newUuid
+        };
+        mockRequest.body = joinAccount;
+
+        // when
+        await accountController.join(mockRequest as Request, mockResponse as Response, mockNext as NextFunction);
+
+        // then
+        const connect = await accountRepository.connect(newUuid);
+        expect(connect[0].username).toEqual(joinAccount.username);
+        expect(connect[0].name).toEqual(joinAccount.name);
+        expect(connect.length).toEqual(1);
+
+        expect(mockResponse.statusCode).toBe(200);
+    });
+
+    test('leave a room', async () => {
+        // given
+        const newUuid = uuid();
+
+        await roomRepository.create({
+            uuid: newUuid,
+            name: "live chatting room test1"
         });
 
         const newAccount: AccountCreateDTO = {
@@ -51,17 +80,25 @@ describe("AccountControllerTests", () => {
             name: "Byoungju Park",
             roomUuid: newUuid
         };
+
+        await accountRepository.createAsJoin(newAccount);
+
+        function sleep(ms: number) {
+            return new Promise((resolve) => {
+                setTimeout(resolve, ms);
+            });
+        }
+
+        await sleep(1000);
+
         mockRequest.body = newAccount;
 
         // when
-        await accountController.join(mockRequest as Request, mockResponse as Response, mockNext as NextFunction);
+        await accountController.leave(mockRequest as Request, mockResponse as Response, mockNext as NextFunction);
 
         // then
         const connect = await accountRepository.connect(newUuid);
-        expect(connect[0].username).toEqual(newAccount.username);
-        expect(connect[0].name).toEqual(newAccount.name);
-        expect(connect.length).toEqual(1);
-
+        expect(connect.length).toEqual(0);
         expect(mockResponse.statusCode).toBe(200);
     });
 });
