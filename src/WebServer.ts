@@ -31,8 +31,8 @@ export default class WebServer {
     }
 
     private routers(): void {
-        this.webApplication.get("/account/:id", this.accountController.get.bind(this.accountController));
-        this.webApplication.post("/account/:id", this.accountController.post.bind(this.accountController));
+        this.webApplication.get("/account/:id", this.accountController.join.bind(this.accountController));
+        this.webApplication.post("/account/:id", this.accountController.leave.bind(this.accountController));
 
         this.webApplication.post("/room/start", this.roomController.start.bind(this.accountController));
         this.webApplication.post("/room/finish", this.roomController.finish.bind(this.accountController));

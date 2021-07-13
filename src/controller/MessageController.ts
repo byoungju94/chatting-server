@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { Sequelize } from "sequelize-typescript";
 import MessageRepository from "../domain/message/MessageRepository";
 
@@ -10,9 +10,11 @@ export default class MessageController {
         this.messageRepository = new MessageRepository(sequelize);
     }
 
-    public async history(req: Request, res: Response): Promise<void> {
-        const roomId = parseInt(req.params.roomId);
-        const history = await this.messageRepository.findByRoomId(roomId);
+    public async history(req: Request, res: Response, next: NextFunction) {
+        const roomUuid = req.body.roomUuid;
+        const history = await this.messageRepository.findByRoomUuid(roomUuid);
+
+        res.statusCode = 200;
         res.send(history);
     }
 }

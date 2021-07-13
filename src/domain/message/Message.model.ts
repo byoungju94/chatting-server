@@ -1,5 +1,4 @@
-import { AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
-import Room from "../room/Room.model";
+import { AutoIncrement, Column, CreatedAt, DataType, Model, PrimaryKey, Table } from "sequelize-typescript";
 
 @Table({
     tableName: "tbl_message",
@@ -21,10 +20,6 @@ export default class Message extends Model {
     @CreatedAt
     creationDate: Date;
 
-    @ForeignKey(() => Room)
-    @Column(DataType.BIGINT)
-    roomId: number;
-
-    @BelongsTo(() => Room)
-    room: Room;
+    @Column(DataType.STRING)
+    roomUuid: string;
 }

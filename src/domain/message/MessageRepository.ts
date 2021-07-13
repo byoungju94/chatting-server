@@ -11,21 +11,28 @@ export default class MessageRepository {
         this.repository = sequelize.getRepository(Message);
     }
 
-    public async findByRoomId(roomId: number): Promise<Array<MessageDTO>> {
+    public async findByRoomUuid(roomUuid: string): Promise<Array<MessageDTO>> {
         return await this.repository.findAll({
-            attributes: ['content', 'username', 'createdAt'],
+            attributes: ['content', 'username', 'creationDate'],
             where: {
-                roomId: roomId
-            }
-        }) as Array<MessageDTO>;
-    }
-
-    public async save(messageSaveDTO: MessageSaveDTO): Promise<void> {
-        await this.repository.create({
-            content: messageSaveDTO.content,
-            accountId: messageSaveDTO.accountId,
-            roomId: messageSaveDTO.roomId
+                roomUuid: roomUuid
+            },
+            raw: true
         });
     }
 
+    public async create(messageSaveDTO: MessageSaveDTO): Promise<void> {
+        await this.repository.create({
+            content: messageSaveDTO.content,
+            username: messageSaveDTO.username,
+            roomUuid: messageSaveDTO.roomUuid
+        });
+    }
+
+    public async clean(): Promise<void> {
+        await this.repository.destroy({
+            where: {},
+            truncate: true
+        });
+    }
 }   

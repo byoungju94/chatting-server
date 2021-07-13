@@ -1,3 +1,4 @@
 export enum AccountState {
-    ACTIVE, LOCKED
+    JOIN = "JOIN",
+    LEAVE = "LEAVE"
 }

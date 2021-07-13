@@ -19,11 +19,8 @@ export default class Account extends Model {
     name: string;
 
     @Column(DataType.STRING)
-    password: string;
+    roomUuid: string;
 
-    @Column(DataType.ENUM("ACTIVE", "LOCKED"))
+    @Column(DataType.ENUM(AccountState.JOIN, AccountState.LEAVE))
     state: AccountState;
-
-    @CreatedAt
-    creationDate: Date;
 }

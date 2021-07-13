@@ -48,6 +48,6 @@ export default class RoomRepository {
         await this.repository.destroy({
             where: {},
             truncate: true
-        })
+        });
     }
 }

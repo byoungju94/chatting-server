@@ -21,8 +21,6 @@ describe("RoomControllerTests", () => {
         roomController = new RoomController(sequelize);
         roomRepository = new RoomRepository(sequelize);
 
-        await roomRepository.clean();
-
         mockRequest = {};
         mockResponse = {
             statusCode: 0,
@@ -32,12 +30,8 @@ describe("RoomControllerTests", () => {
         };
     });
 
-    afterEach(() => {
-        console.log("after each...");
-    })
-
-    afterAll(() => {
-        console.log("test finshed...");
+    afterEach(async () => {
+        await roomRepository.clean();
     });
 
     test('starting new chatting room', async () => {
@@ -46,13 +40,16 @@ describe("RoomControllerTests", () => {
             result: "success"
         }
 
+        // given
         mockRequest.body = {
             uuid: `${newUuid}`,
             name: `samsung live testing - ${newUuid}`,
         }
 
+        // when
         await roomController.start(mockRequest as Request, mockResponse as Response, mockNext as NextFunction);
 
+        // then
         expect(mockResponse.statusCode).toBe(expectedStatusCode);
         expect(responseObject).toEqual(expectedResponse);
     });
@@ -63,13 +60,16 @@ describe("RoomControllerTests", () => {
             result: "success"
         }
 
+        // given
         mockRequest.body = {
             uuid: `${newUuid}`,
             name: `samsung live testing - ${newUuid}`,
         }
 
+        // when
         await roomController.finish(mockRequest as Request, mockResponse as Response, mockNext as NextFunction);
 
+        // then
         expect(mockResponse.statusCode).toBe(expectedStatusCode);
         expect(responseObject).toEqual(expectedResponse);
     });
@@ -78,6 +78,7 @@ describe("RoomControllerTests", () => {
         const expectedStatusCode = 200;
         const expectedResponse = {};
 
+        // then
         const uuid1 = uuid();
         const uuid2 = uuid();
         const uuid3 = uuid();
@@ -103,9 +104,12 @@ describe("RoomControllerTests", () => {
 
         await roomRepository.createAsLock(room1);
 
+        // when
         await roomController.active(mockRequest as Request, mockResponse as Response, mockNext as NextFunction);
 
+        // then
         expect(mockResponse.statusCode).toBe(expectedStatusCode);
         expect((responseObject as Array<RoomDTO>).length).toEqual(3);
+        expect((responseObject as Array<RoomDTO>).filter(element => element.state === "LOCKED")).toEqual([]);
     });
 });

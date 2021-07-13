@@ -1,5 +1,5 @@
 export default interface MessageSaveDTO {
     content: string,
-    accountId: number,
-    roomId: number
+    username: string,
+    roomUuid: string,
 }
