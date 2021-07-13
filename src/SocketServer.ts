@@ -5,7 +5,7 @@ import SocketHandlers from "./socket/SocketHandlers";
 export default class SocketServer {
 
     private readonly io: Server;
-    private readonly eventTypes = ['connect', 'disconnect'];
+    private readonly eventTypes = ['connect', 'disconnect', 'message'];
  
     constructor(httpServer: http.Server) {
         this.io = new Server();
