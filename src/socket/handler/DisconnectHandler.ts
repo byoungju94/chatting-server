@@ -1,15 +1,16 @@
+import { Sequelize } from "sequelize-typescript";
 import { Socket } from "socket.io";
 import AccountRepository from "../../domain/account/AccountRepository";
 import AccountCreateDTO from "../../domain/account/dto/AccountCreateDTO";
 import SocketConnectedAccounts from "../SocketConnectedAccounts";
 import Handler from "./Handler";
 
-export default class DisconnectHandler implements Handler<AccountRepository> {
+export default class DisconnectHandler implements Handler {
 
     private repository: AccountRepository;
 
-    constructor(repository: AccountRepository) {
-        this.repository = repository;
+    constructor(sequelize: Sequelize) {
+        this.repository = new AccountRepository(sequelize);
     }
     
     public handle(socket: Socket, socketUuid: string): void {

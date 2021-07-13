@@ -23,10 +23,11 @@ export default class SocketServer {
         })
 
         tenant.on('connection', async (socket: Socket) => {
+            const tenant = socket.nsp.name;
+            const sequelize = await StorageConfiguration.initialize("mysql", tenant);
+
             for (const event in this.eventTypes) {
-                const socketHandlers = new SocketHandlers(new (<any>window)[event.charAt(0).toUpperCase() + event.slice(1) + "Handler"]());
-                const tenant = socket.nsp.name;
-                const sequelize = await StorageConfiguration.initialize("mysql", tenant);
+                const socketHandlers = new SocketHandlers(new (<any>window)[event.charAt(0).toUpperCase() + event.slice(1) + "Handler"](sequelize));
 
                 socket.on(event, socketHandlers.run.bind(socketHandlers));
             }

@@ -5,7 +5,7 @@ import AccountCreateDTO from "../../domain/account/dto/AccountCreateDTO";
 import SocketConnectedAccounts from "../SocketConnectedAccounts";
 import Handler from "./Handler";
 
-export default class ConnectHandler implements Handler<AccountRepository> {
+export default class ConnectHandler implements Handler {
 
     private repository: AccountRepository;
 

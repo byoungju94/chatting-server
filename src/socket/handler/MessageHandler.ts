@@ -2,13 +2,14 @@ import { Socket } from "socket.io";
 import MessageRepository from "../../domain/message/MessageRepository";
 import Handler from "./Handler";
 import MessageSaveDTO from "../../domain/message/dto/MessageSaveDTO";
+import { Sequelize } from "sequelize-typescript";
 
-export default class MessageHandler implements Handler<MessageRepository> {
+export default class MessageHandler implements Handler {
 
     private repository: MessageRepository;
 
-    constructor(repository: MessageRepository) {
-        this.repository = repository;
+    constructor(sequelize: Sequelize) {
+        this.repository = new MessageRepository(sequelize);
     }
     
     public handle(socket: Socket, msg: any): void {
