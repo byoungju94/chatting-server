@@ -1,30 +1,32 @@
 import { createServer, Server } from "http";
-import { AddressInfo } from "net";
 import * as server from "socket.io";
 import * as client from "socket.io-client";
+import SocketServer from "./SocketServer";
+import WebServer from "./WebServer";
 
 describe("SockerServerTests", () => {
-    let serverIO: server.Server;
+    let io: server.Server;
     let serverSocket: server.Socket;
     let clientSocket: client.Socket;
 
-    beforeAll((done) => {
-        const httpServer: Server = createServer();
-        serverIO = new server.Server(httpServer);
+    beforeAll(async (done) => {
+        const webServer = await WebServer.bootstrap("mysql");
+        const application = webServer.start();
 
-        httpServer.listen(() => {
-            const { port } = httpServer.address() as AddressInfo;
-            clientSocket = client.io(`http://localhost:${port}`);
-            serverIO.on("connection", (socket: server.Socket) => {
-                serverSocket = socket;
-            });
+        const httpServer: Server = createServer(application);
+        io = new SocketServer(httpServer).get();
 
-            clientSocket.on("connect", done);
+        clientSocket = client.io(`http://localhost:8080`);
+        
+        io.on("connection", (socket: server.Socket) => {
+            serverSocket = socket;
         });
+
+        clientSocket.on("connect", done);
     });
 
     afterAll(() => {
-        serverIO.close();
+        io.close();
         clientSocket.close();
     });
 

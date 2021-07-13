@@ -1,5 +1,6 @@
 import http from "http";
 import { Server, Socket } from "socket.io";
+import StorageConfiguration from "../build/configuration/StorageConfiguration";
 import SocketHandlers from "./socket/SocketHandlers";
 
 export default class SocketServer {
@@ -21,11 +22,18 @@ export default class SocketServer {
             next();
         })
 
-        tenant.on('connection', (socket: Socket) => {
+        tenant.on('connection', async (socket: Socket) => {
             for (const event in this.eventTypes) {
                 const socketHandlers = new SocketHandlers(new (<any>window)[event.charAt(0).toUpperCase() + event.slice(1) + "Handler"]());
-                socket.on(event, socketHandlers.run.bind(socketHandlers, socket, socket.nsp.name));
+                const tenant = socket.nsp.name;
+                const sequelize = await StorageConfiguration.initialize("mysql", tenant);
+
+                socket.on(event, socketHandlers.run.bind(socketHandlers));
             }
         });
+    }
+
+    public get(): Server {
+        return this.io;
     }
 }

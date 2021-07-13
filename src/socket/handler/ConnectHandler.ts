@@ -1,15 +1,22 @@
+import { Sequelize } from "sequelize-typescript";
 import { Socket } from "socket.io";
-import AccountRepository from "../../../build/domain/account/AccountRepository";
+import AccountRepository from "../../domain/account/AccountRepository";
 import AccountCreateDTO from "../../domain/account/dto/AccountCreateDTO";
 import SocketConnectedAccounts from "../SocketConnectedAccounts";
 import Handler from "./Handler";
 
 export default class ConnectHandler implements Handler<AccountRepository> {
+
+    private repository: AccountRepository;
+
+    constructor(sequelize: Sequelize) {
+        this.repository = new AccountRepository(sequelize);
+    }
     
-    public async handle(socket: Socket, repository: AccountRepository, msg: any): Promise<void> {
+    public async handle(socket: Socket, msg: any): Promise<void> {
         const accountCreateDTO = msg as AccountCreateDTO;
         SocketConnectedAccounts.store.set(socket.id, accountCreateDTO);
-        await repository.createAsJoin(accountCreateDTO);
+        await this.repository.createAsJoin(accountCreateDTO);
         socket.emit("connect", accountCreateDTO);
     }   
 }

@@ -1,15 +1,15 @@
 import Handler from "./handler/Handler";
 import { Socket } from "socket.io";
 
-export default class SocketHandlers<T> {
+export default class SocketHandlers {
 
-    private readonly handler: Handler<T>;
+    private readonly handler: Handler;
 
-    constructor(handler: Handler<T>) {
+    constructor(handler: Handler) {
         this.handler = handler;
     }
 
-    public run(socket: Socket, repository: T, msg: any): void {
-        this.handler.handle(socket, repository, msg);
+    public run(socket: Socket, msg: any): void {
+        this.handler.handle(socket, msg);
     }
 }

@@ -14,6 +14,7 @@ export default class WebServer {
     private constructor(sequelize: Sequelize) {
         this.webApplication = express();
         this.accountController = new AccountController(sequelize);
+        this.roomController = new RoomController(sequelize);
     }
 
     public static async bootstrap(storageType: string) {
@@ -34,8 +35,8 @@ export default class WebServer {
         this.webApplication.get("/account/:id", this.accountController.join.bind(this.accountController));
         this.webApplication.post("/account/:id", this.accountController.leave.bind(this.accountController));
 
-        this.webApplication.post("/room/start", this.roomController.start.bind(this.accountController));
-        this.webApplication.post("/room/finish", this.roomController.finish.bind(this.accountController));
+        this.webApplication.post("/room/start", this.roomController.start.bind(this.roomController));
+        this.webApplication.post("/room/finish", this.roomController.finish.bind(this.roomController));
     }
 
     public start(): express.Application {
