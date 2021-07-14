@@ -1,29 +1,31 @@
 import { createServer } from "http";
-import { Sequelize } from 'sequelize-typescript';
 import * as server from "socket.io";
 import * as client from "socket.io-client";
-import StorageConfiguration from "./configuration/StorageConfiguration";
-import AccountRepository from "./domain/account/AccountRepository";
+import { v4 as uuid } from 'uuid';
 import AccountCreateDTO from "./domain/account/dto/AccountCreateDTO";
 import MessageSaveDTO from "./domain/message/dto/MessageSaveDTO";
 import SocketServer from "./SocketServer";
-import { v4 as uuid } from 'uuid';
 
 describe("SockerServerTests", () => {
     let io: server.Server;
     let socket_s: server.Socket;
-    
     let socket_c: client.Socket;
 
-    let sequelize: Sequelize;
-    let accountRepository: AccountRepository;
+    const roomUuid = uuid();
+
+    const newAccount: AccountCreateDTO = {
+        username: "byoungju94",
+        name: "Byoungju Park",
+        roomUuid: roomUuid
+    };
+
+    const newAccount2: AccountCreateDTO = {
+        username: "parker00",
+        name: "Peter Parker",
+        roomUuid: roomUuid
+    }
 
     beforeAll((done) => {
-        StorageConfiguration.initialize("mysql", "test").then(seq => {
-            sequelize = seq;
-            accountRepository = new AccountRepository(seq);
-        });
-
         const httpServer = createServer();
         io = new server.Server(httpServer);
         httpServer.listen(8081);
@@ -34,12 +36,12 @@ describe("SockerServerTests", () => {
         });
 
         socket_c = client.io(`ws://localhost:8081/test`, {forceNew: true});
+        
         socket_c.on('connect', done);
     });
 
-    afterAll(() => {
+    afterAll(async () => {
         io.close();
-
         socket_c.close();
     });
 
@@ -52,84 +54,49 @@ describe("SockerServerTests", () => {
         socket_s.emit("ping", "pong");
     });
 
-    // test('should join successfully', (done) => {
-    //     const newUuid = uuid();
+    test('should join successfully', (done) => {
+        socket_c.on("join", (msg: any) => {
+            expect(msg).toStrictEqual(newAccount);
+            expect(socket_s.rooms.size).toBe(2);
+            expect(socket_s.rooms.has(newAccount.roomUuid)).toBe(true);
 
-    //     const send: AccountCreateDTO = {
-    //         username: "byoungju94",
-    //         name: "Byoungju Park",
-    //         roomUuid: newUuid
-    //     };
+            done();
+        });
 
-    //     socket_c.on("join", (msg: any) => {
-    //         expect(msg).toStrictEqual(send);
-    //         expect(socket_s.rooms.size).toBe(2);
-    //         expect(socket_s.rooms.has(newUuid)).toBe(true);
+        socket_c.emit('join', newAccount);
+    });
 
-    //         done();
-    //     });
+    test('should send message successfully', (done) => {
+        const message: MessageSaveDTO = {
+            content: "Good Morning!",
+            username: "byoungju94",
+            name: "Byoungju Park",
+            roomUuid: newAccount.roomUuid
+        };
 
-    //     socket_c.emit('join', send);
-    // });
+        socket_c.on("message", (response: any) => {
+            expect(response).toStrictEqual(message);
+            done();
+        });
 
-    // test('should send message successfully', () => {
-    //     const newUuid = uuid();
-
-    //     const newAccount: AccountCreateDTO = {
-    //         username: "byoungju94",
-    //         name: "byoungju94",
-    //         roomUuid: newUuid
-    //     };
-
-    //     const message: MessageSaveDTO = {
-    //         content: "Good Morning!",
-    //         username: "byoungju94",
-    //         name: "Byoungju Park",
-    //         roomUuid: newUuid
-    //     };
-
-    //     socket_c.on("message", (response: any) => {
-    //         expect(response).toStrictEqual(message);
-    //     });
-
-    //     socket_c.emit('join', newAccount);
-    //     socket_c.emit('message', message);
-    // });
+        socket_c.emit('message', message);
+    });
 
     test('should notify message when another user disconnected or leaved', (done) => {
-        const newUuid = uuid();
-
         let socket_c2 = client.io(`ws://localhost:8081/test`, {forceNew: true});
-
         socket_c2.on('connect', () => {
+            socket_c2.emit("join", newAccount2);
+        });
+
+        socket_c2.on("leave", (response) => {
+            expect(response).toStrictEqual(newAccount);
+
             done();
             socket_c2.close();
         });
 
-
-
-        // const newAccount1: AccountCreateDTO = {
-        //     username: "byoungju94",
-        //     name: "Byoungju Park",
-        //     roomUuid: newUuid
-        // }
-
-        // const newAccount2: AccountCreateDTO = {
-        //     username: "parker00",
-        //     name: "Peter Parker",
-        //     roomUuid: newUuid
-        // }
-
-        // socket_c2.on("disconnected", (response) => {
-        //     expect(response).toStrictEqual(newAccount1);
-
-        //     socket_c2.close();
-        //     done();
-        // });
-
-        // socket_c.emit("join", newAccount1);
-        // socket_c2.emit("join", newAccount2);
-
-        // socket_c.close();
+        setTimeout(() => {
+            socket_c.close();    
+        }, 1000);
     });
 });

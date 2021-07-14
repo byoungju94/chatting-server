@@ -15,6 +15,6 @@ export default class MessageHandler implements Handler {
     public handle(socket: Socket, msg: any): void {
         const messageSaveDTO = msg as MessageSaveDTO;
         this.repository.create(messageSaveDTO);
-        socket.to(messageSaveDTO.roomUuid).emit("message", messageSaveDTO);
+        socket.nsp.to(messageSaveDTO.roomUuid).emit("message", messageSaveDTO);
     }
 }
