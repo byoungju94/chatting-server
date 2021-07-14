@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { Sequelize } from 'sequelize-typescript';
 import { uuid } from 'uuidv4';
 import StorageConfiguration from '../configuration/StorageConfiguration';
 import MessageDTO from '../domain/message/dto/MessageDTO';
@@ -17,13 +18,16 @@ describe("MessageControllerTests", () => {
     let mockNext: Partial<Response>;
     let responseObject = {};
 
-    beforeEach(async () => {
-        const sequelize = await StorageConfiguration.initialize("mysql", "test");
+    let sequelize: Sequelize;
+
+    beforeAll(async () => {
+        sequelize = await StorageConfiguration.initialize("mysql", "test");
         messageController = new MessageController(sequelize);
         messageRepository = new MessageRepository(sequelize);
-        
         roomRepository = new RoomRepository(sequelize);
+    });
 
+    beforeEach(async () => {
         await messageRepository.clean();
         await roomRepository.clean();
 
@@ -40,6 +44,10 @@ describe("MessageControllerTests", () => {
         await messageRepository.clean();
         await roomRepository.clean();
     });
+    
+    afterAll(async () => {
+        await sequelize.close();
+    })
 
     test('get chatting log per room', async () => {
         const expectedStatusCode = 200;

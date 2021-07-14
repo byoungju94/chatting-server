@@ -7,7 +7,7 @@
     "start": "pm2 kill && pm2 start build/index.js",
     "dev": "node build/index.js",
     "build": "rm -rf ./build && tsc --project ./tsconfig.json",
-    "test": "jest -c ./jest.unit.json",
+    "test": "jest -c ./jest.unit.json --runInBand --detectOpenHandles --forceExit",
     "test:coverage": "jest --coverage -c ./jest.unit.json"
   },
   "keywords": [],

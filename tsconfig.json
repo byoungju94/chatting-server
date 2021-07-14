@@ -17,6 +17,6 @@
     "forceConsistentCasingInFileNames": true        /* Disallow inconsistently-cased references to the same file. */
   },
   "exclude": [
-    "**/*.spec.ts"
+    "**/*.spec.ts",
   ]
 }

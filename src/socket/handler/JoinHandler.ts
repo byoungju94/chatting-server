@@ -5,7 +5,7 @@ import AccountCreateDTO from "../../domain/account/dto/AccountCreateDTO";
 import SocketConnectedAccounts from "../SocketConnectedAccounts";
 import Handler from "./Handler";
 
-export default class ConnectHandler implements Handler {
+export default class JoinHandler implements Handler {
 
     private repository: AccountRepository;
 
@@ -17,6 +17,7 @@ export default class ConnectHandler implements Handler {
         const accountCreateDTO = msg as AccountCreateDTO;
         SocketConnectedAccounts.store.set(socket.id, accountCreateDTO);
         await this.repository.createAsJoin(accountCreateDTO);
+        socket.join(accountCreateDTO.roomUuid);
         socket.emit("connect", accountCreateDTO);
     }   
 }

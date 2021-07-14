@@ -1,41 +1,66 @@
-import { createServer, Server } from "http";
+import { createServer } from "http";
+import { Sequelize } from 'sequelize-typescript';
 import * as server from "socket.io";
 import * as client from "socket.io-client";
+import StorageConfiguration from "./configuration/StorageConfiguration";
+import AccountRepository from "./domain/account/AccountRepository";
+import AccountCreateDTO from "./domain/account/dto/AccountCreateDTO";
 import SocketServer from "./SocketServer";
-import WebServer from "./WebServer";
 
 describe("SockerServerTests", () => {
     let io: server.Server;
-    let serverSocket: server.Socket;
-    let clientSocket: client.Socket;
+    let socket_s: server.Socket;
+    let socket_c: client.Socket;
+
+    let sequelize: Sequelize;
+    let accountRepository: AccountRepository;
 
     beforeAll(async (done) => {
-        const webServer = await WebServer.bootstrap("mysql");
-        const application = webServer.start();
-
-        const httpServer: Server = createServer(application);
-        io = new SocketServer(httpServer).get();
-
-        clientSocket = client.io(`http://localhost:8080`);
-        
-        io.on("connection", (socket: server.Socket) => {
-            serverSocket = socket;
+        const httpServer = createServer();
+        io = new server.Server(httpServer);
+        httpServer.listen(8081);
+    
+        io.of("/test").on("connection", async socket => {
+            socket_s = socket;
+            await SocketServer.registerEventHandler(socket, "test");
         });
 
-        clientSocket.on("connect", done);
+        socket_c = client.io(`ws://localhost:8081/test`);
+        socket_c.on('connect', done);
+
+        sequelize = await StorageConfiguration.initialize("mysql", "test");
+        accountRepository = new AccountRepository(sequelize);
     });
 
     afterAll(() => {
         io.close();
-        clientSocket.close();
+        socket_c.close();
     });
 
     test('should connected successfully', (done) => {
-        clientSocket.on("ping", (msg) => {
+        socket_c.on("ping", (msg) => {
             expect(msg).toBe("pong");
             done();
         });
 
-        serverSocket.emit("ping", "pong");
-    }); 
+        socket_s.emit("ping", "pong");
+    });
+
+    test('should join successfully', () => {
+        const send: AccountCreateDTO = {
+            username: "byoungju94",
+            name: "Byoungju Park",
+            roomUuid: "32454-0123-012412"
+        };
+
+        socket_c.on("join", (received: AccountCreateDTO) => {
+            expect(received).toBe(send);
+        });
+
+        socket_c.emit('join', send);
+    });
+
+    test('should send message successfully', () => {
+
+    });
 });

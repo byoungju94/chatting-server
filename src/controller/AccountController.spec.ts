@@ -5,6 +5,7 @@ import AccountController from './AccountController';
 import AccountRepository from '../domain/account/AccountRepository';
 import AccountCreateDTO from '../domain/account/dto/AccountCreateDTO';
 import RoomRepository from '../domain/room/RoomRepository';
+import { Sequelize } from 'sequelize-typescript';
 
 describe("AccountControllerTests", () => {
     let accountController: AccountController;
@@ -17,13 +18,16 @@ describe("AccountControllerTests", () => {
     let mockNext: Partial<NextFunction>;
     let responseObject = {};
 
-    beforeEach(async () => {
-        const sequelize = await StorageConfiguration.initialize("mysql", "test");
+    let sequelize: Sequelize;
+
+    beforeAll(async () => {
+        sequelize = await StorageConfiguration.initialize("mysql", "test");
         accountController = new AccountController(sequelize);
         accountRepository = new AccountRepository(sequelize);
-
         roomRepository = new RoomRepository(sequelize);
+    })
 
+    beforeEach(async () => {
         mockRequest = {};
         mockResponse = {
             statusCode: 0,
@@ -37,6 +41,10 @@ describe("AccountControllerTests", () => {
         await accountRepository.clean();
         await roomRepository.clean();
     });
+
+    afterAll(async () => {
+        await sequelize.close();
+    })
 
     test('join a room', async () => {
         // given

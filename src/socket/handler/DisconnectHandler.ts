@@ -14,10 +14,15 @@ export default class DisconnectHandler implements Handler {
     }
     
     public handle(socket: Socket, socketUuid: string): void {
-        const accountCreateDTO: AccountCreateDTO = SocketConnectedAccounts.store.get(socketUuid)!!;
-        socket.to(accountCreateDTO.roomUuid).emit(accountCreateDTO.name);
+        console.log("disconnectHandlerFired...");
+        console.log("socket: ", socket.id);
+        console.log("socketUuid: ", socketUuid);
+        // console.log("")
 
-        this.repository.createAsLeave(accountCreateDTO);
-        SocketConnectedAccounts.store.delete(socketUuid);
+        // const accountCreateDTO: AccountCreateDTO = SocketConnectedAccounts.store.get(socketUuid)!!;
+        // socket.to(accountCreateDTO.roomUuid).emit(accountCreateDTO.name);
+
+        // this.repository.createAsLeave(accountCreateDTO);
+        // SocketConnectedAccounts.store.delete(socketUuid);
     }
 }

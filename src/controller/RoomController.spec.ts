@@ -4,6 +4,7 @@ import RoomController from './RoomController';
 import { uuid } from 'uuidv4';
 import RoomRepository from '../domain/room/RoomRepository';
 import RoomDTO from '../domain/room/dto/RoomDTO';
+import { Sequelize } from 'sequelize-typescript';
 
 describe("RoomControllerTests", () => {
     let roomController: RoomController;
@@ -14,13 +15,17 @@ describe("RoomControllerTests", () => {
     let mockNext: Partial<NextFunction>;
     let responseObject = {};
 
+    let sequelize: Sequelize;
+
     const newUuid = uuid();
 
-    beforeEach(async () => {
-        const sequelize = await StorageConfiguration.initialize("mysql", "test");
+    beforeAll(async () => {
+        sequelize = await StorageConfiguration.initialize("mysql", "test");
         roomController = new RoomController(sequelize);
         roomRepository = new RoomRepository(sequelize);
+    });
 
+    beforeEach(async () => {
         mockRequest = {};
         mockResponse = {
             statusCode: 0,
@@ -33,6 +38,10 @@ describe("RoomControllerTests", () => {
     afterEach(async () => {
         await roomRepository.clean();
     });
+
+    afterAll(async () => {
+        await sequelize.close();
+    })
 
     test('starting new chatting room', async () => {
         const expectedStatusCode = 200;
@@ -94,14 +103,8 @@ describe("RoomControllerTests", () => {
         await roomRepository.create(room3);
         await roomRepository.create(room4);
 
-        function sleep(ms: number) {
-            return new Promise((resolve) => {
-                setTimeout(resolve, ms);
-            });
-        }
-
-        await sleep(1000);
-
+        await new Promise((r) => setTimeout(r, 1000));
+        
         await roomRepository.createAsLock(room1);
 
         // when

@@ -1,40 +1,43 @@
+import 'reflect-metadata'
 import http from "http";
-import { Server, Socket } from "socket.io";
-import StorageConfiguration from "../build/configuration/StorageConfiguration";
+import * as io from "socket.io";
+import StorageConfiguration from "./configuration/StorageConfiguration"
 import SocketHandlers from "./socket/SocketHandlers";
+import { SocketEventTypes } from './socket/SocketEventType';
 
 export default class SocketServer {
 
-    private readonly io: Server;
-    private readonly eventTypes = ['connect', 'disconnect', 'message'];
+    private readonly io: io.Server;
  
     constructor(httpServer: http.Server) {
-        this.io = new Server();
+        this.io = new io.Server();
         this.io.attach(httpServer);
     
-        this.addHandlers();
+        this.initialize(this);
     }
 
-    private addHandlers(): void {
-        const tenant = this.io.of(/^\/\w+$/);
-
-        tenant.use((socket: Socket, next) => {
-            next();
-        })
-
-        tenant.on('connection', async (socket: Socket) => {
-            const tenant = socket.nsp.name;
-            const sequelize = await StorageConfiguration.initialize("mysql", tenant);
-
-            for (const event in this.eventTypes) {
-                const socketHandlers = new SocketHandlers(new (<any>window)[event.charAt(0).toUpperCase() + event.slice(1) + "Handler"](sequelize));
-
-                socket.on(event, socketHandlers.run.bind(socketHandlers));
-            }
+    private initialize(socketServer: SocketServer): void {
+        const tenant = socketServer.io.of(/^\/\w+$/);
+        tenant.on('connection', async (socket: io.Socket) => {
+            await SocketServer.registerEventHandler(socket, "test");
         });
     }
 
-    public get(): Server {
+    public static async registerEventHandler(socket: io.Socket, tenant: string) {
+        const sequelize = await StorageConfiguration.initialize("mysql", "test");
+        
+        for (const eventType in SocketEventTypes) {
+            const eventName = eventType.replace("Handler", "").toLowerCase();
+            const handlers = new SocketHandlers(new SocketEventTypes[eventType](sequelize));
+            socket.on(eventName, handlers.run.bind(handlers));
+        }
+    }
+
+    public get(): io.Server {
         return this.io;
+    }
+
+    public terminate(): void {
+        return this.io.close();
     }
 }

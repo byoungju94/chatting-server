@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import { Sequelize } from "sequelize-typescript";
 import StorageConfiguration from "./configuration/StorageConfiguration";
 import AccountController from "./controller/AccountController";
@@ -24,7 +25,8 @@ export default class WebServer {
 
     private registerMiddlewares(): void {
         this.webApplication.use(async (req, res, next) => {
-            const tenant = req.headers.host?.toString();
+            // const tenant = req.headers.host?.toString();
+            const tenant = "test";
             const sequelize = await StorageConfiguration.initialize("mysql", tenant!!);
             this.accountController = new AccountController(sequelize);
             next();
