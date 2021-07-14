@@ -29,7 +29,7 @@ export default class SocketServer {
         for (const eventType in SocketEventTypes) {
             const eventName = eventType.replace("Handler", "").toLowerCase();
             const handlers = new SocketHandlers(new SocketEventTypes[eventType](sequelize));
-            socket.on(eventName, handlers.run.bind(handlers));
+            socket.on(eventName, handlers.run.bind(handlers, socket));
         }
     }
 

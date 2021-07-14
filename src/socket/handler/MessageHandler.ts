@@ -13,8 +13,8 @@ export default class MessageHandler implements Handler {
     }
     
     public handle(socket: Socket, msg: any): void {
-        const messageDTO = msg as MessageSaveDTO;
-        this.repository.create(messageDTO);
-        socket.emit("message", messageDTO);
+        const messageSaveDTO = msg as MessageSaveDTO;
+        this.repository.create(messageSaveDTO);
+        socket.to(messageSaveDTO.roomUuid).emit("message", messageSaveDTO);
     }
 }

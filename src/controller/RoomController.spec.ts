@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import StorageConfiguration from '../configuration/StorageConfiguration';
 import RoomController from './RoomController';
-import { uuid } from 'uuidv4';
+import { v4 as uuid } from 'uuid';
 import RoomRepository from '../domain/room/RoomRepository';
 import RoomDTO from '../domain/room/dto/RoomDTO';
 import { Sequelize } from 'sequelize-typescript';

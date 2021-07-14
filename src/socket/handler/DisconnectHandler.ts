@@ -13,16 +13,11 @@ export default class DisconnectHandler implements Handler {
         this.repository = new AccountRepository(sequelize);
     }
     
-    public handle(socket: Socket, socketUuid: string): void {
-        console.log("disconnectHandlerFired...");
-        console.log("socket: ", socket.id);
-        console.log("socketUuid: ", socketUuid);
-        // console.log("")
-
-        // const accountCreateDTO: AccountCreateDTO = SocketConnectedAccounts.store.get(socketUuid)!!;
-        // socket.to(accountCreateDTO.roomUuid).emit(accountCreateDTO.name);
+    public handle(socket: Socket, reason: string): void {
+        // const accountCreateDTO: AccountCreateDTO = SocketConnectedAccounts.store.get(socket.id)!!;
+        // socket.to(accountCreateDTO.roomUuid).emit("disconnected", accountCreateDTO);
 
         // this.repository.createAsLeave(accountCreateDTO);
-        // SocketConnectedAccounts.store.delete(socketUuid);
+        // SocketConnectedAccounts.store.delete(socket.id);
     }
 }

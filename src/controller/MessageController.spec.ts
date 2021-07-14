@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { Sequelize } from 'sequelize-typescript';
-import { uuid } from 'uuidv4';
+import { v4 as uuid } from 'uuid';
 import StorageConfiguration from '../configuration/StorageConfiguration';
 import MessageDTO from '../domain/message/dto/MessageDTO';
 import MessageRepository from '../domain/message/MessageRepository';
@@ -63,16 +63,19 @@ describe("MessageControllerTests", () => {
             { 
                 content: "Hello, World!", 
                 username: "byoungju94",
+                name: "Byoungju Park",
                 roomUuid: newUuid
             },
             {
                 content: "Good Morning!", 
                 username: "byoungju94",
+                name: "Byoungju Park",
                 roomUuid: newUuid    
             },
             {
                 content: "See you later!",
                 username: "byoungju94",
+                name: "Byoungju Park",
                 roomUuid: newUuid    
             }
         ];

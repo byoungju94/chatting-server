@@ -18,6 +18,6 @@ export default class JoinHandler implements Handler {
         SocketConnectedAccounts.store.set(socket.id, accountCreateDTO);
         await this.repository.createAsJoin(accountCreateDTO);
         socket.join(accountCreateDTO.roomUuid);
-        socket.emit("connect", accountCreateDTO);
+        socket.emit("join", accountCreateDTO);
     }   
 }

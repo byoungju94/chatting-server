@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { uuid } from 'uuidv4';
+import { v4 as uuid } from 'uuid';
 import StorageConfiguration from '../configuration/StorageConfiguration';
 import AccountController from './AccountController';
 import AccountRepository from '../domain/account/AccountRepository';
