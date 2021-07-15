@@ -3,7 +3,7 @@ import http from "http";
 import * as io from "socket.io";
 import StorageConfiguration from "./configuration/StorageConfiguration"
 import SocketHandlers from "./socket/SocketHandlers";
-import { SocketEventTypes } from './socket/SocketEventType';
+import { SocketEventHandlerTypes } from './socket/SocketEventHandlerTypes';
 
 export default class SocketServer {
 
@@ -26,9 +26,9 @@ export default class SocketServer {
     public static async registerEventHandler(socket: io.Socket, tenant: string) {
         const sequelize = await StorageConfiguration.initialize("mysql", "test");
         
-        for (const eventType in SocketEventTypes) {
+        for (const eventType in SocketEventHandlerTypes) {
             const eventName = eventType.replace("Handler", "").toLowerCase();
-            const handlers = new SocketHandlers(new SocketEventTypes[eventType](sequelize));
+            const handlers = new SocketHandlers(new SocketEventHandlerTypes[eventType](sequelize));
             socket.on(eventName, handlers.run.bind(handlers, socket));
         }
     }
