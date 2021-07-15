@@ -16,15 +16,10 @@ export default class StorageConfiguration {
                     dialect: 'mysql',
                     username: 'root',
                     password: "contentwave",
-                    logging: false,
-                    
+                    logging: false,    
                 });
                 sequelize.addModels([Account, Room, Message]);
-                // await sequelize.sync({
-                //     force: true,
-                //     logging: false
-                // });
-                // await sequelize.close();
+
                 StorageConfiguration.connectionPool.set(tenant, sequelize);
             }
         }

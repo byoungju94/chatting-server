@@ -25,7 +25,7 @@ describe("AccountControllerTests", () => {
         accountController = new AccountController(sequelize);
         accountRepository = new AccountRepository(sequelize);
         roomRepository = new RoomRepository(sequelize);
-    })
+    });
 
     beforeEach(async () => {
         mockRequest = {};
@@ -61,12 +61,14 @@ describe("AccountControllerTests", () => {
             roomUuid: newUuid
         };
         mockRequest.body = joinAccount;
+        
 
         // when
         await accountController.join(mockRequest as Request, mockResponse as Response, mockNext as NextFunction);
 
         // then
         const connect = await accountRepository.connect(newUuid);
+        
         expect(connect[0].username).toEqual(joinAccount.username);
         expect(connect[0].name).toEqual(joinAccount.name);
         expect(connect.length).toEqual(1);
