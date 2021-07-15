@@ -42,10 +42,6 @@ export default class WebServer {
         next();
     }
 
-    public getDataSource() {
-        return this.sequelize;
-    }
-
     private registerRouters(): void {
         this.webApplication.get("/account/:id", this.selectDataSource, this.accountController.join.bind(this.accountController));
         this.webApplication.post("/account/:id", this.selectDataSource, this.accountController.leave.bind(this.accountController));
@@ -63,5 +59,9 @@ export default class WebServer {
         });
 
         return this.webApplication;
+    }
+
+    public getDataSource() {
+        return this.sequelize;
     }
 }
