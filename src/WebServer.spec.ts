@@ -1,8 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import { v4 as uuid } from 'uuid';
-import { Sequelize } from 'sequelize-typescript';
+import { NextFunction, Request, Response } from 'express';
 import WebServer from "./WebServer";
-import StorageConfiguration from './configuration/StorageConfiguration';
 
 describe("MiddlewareTests", () => {
     let mockRequest: Partial<Request>;
