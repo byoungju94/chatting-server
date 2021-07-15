@@ -46,7 +46,7 @@ describe("AccountControllerTests", () => {
         await sequelize.close();
     })
 
-    test('join a room', async () => {
+    test('should join a room successfully', async () => {
         // given
         const newUuid = uuid();
         
@@ -76,7 +76,7 @@ describe("AccountControllerTests", () => {
         expect(mockResponse.statusCode).toBe(200);
     });
 
-    test('leave a room', async () => {
+    test('should leave a room successfully', async () => {
         // given
         const newUuid = uuid();
 
