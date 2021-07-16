@@ -20,7 +20,7 @@ describe("RoomControllerTests", () => {
     const newUuid = uuid();
 
     beforeAll(async () => {
-        sequelize = await StorageConfiguration.initialize("mysql", "test");
+        sequelize = await StorageConfiguration.change("mysql", "test");
         roomController = new RoomController(sequelize);
         roomRepository = new RoomRepository(sequelize);
     });

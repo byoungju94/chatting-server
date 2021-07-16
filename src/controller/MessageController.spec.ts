@@ -21,7 +21,7 @@ describe("MessageControllerTests", () => {
     let sequelize: Sequelize;
 
     beforeAll(async () => {
-        sequelize = await StorageConfiguration.initialize("mysql", "test");
+        sequelize = await StorageConfiguration.change("mysql", "test");
         messageController = new MessageController(sequelize);
         messageRepository = new MessageRepository(sequelize);
         roomRepository = new RoomRepository(sequelize);

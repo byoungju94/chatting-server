@@ -21,7 +21,7 @@ describe("AccountControllerTests", () => {
     let sequelize: Sequelize;
 
     beforeAll(async () => {
-        sequelize = await StorageConfiguration.initialize("mysql", "test");
+        sequelize = await StorageConfiguration.change("mysql", "test");
         accountController = new AccountController(sequelize);
         accountRepository = new AccountRepository(sequelize);
         roomRepository = new RoomRepository(sequelize);

@@ -24,7 +24,7 @@ export default class SocketServer {
     }
 
     public static async registerEventHandler(socket: io.Socket, tenant: string) {
-        const sequelize = await DataSourceConfiguration.initialize("mysql", "test");
+        const sequelize = await DataSourceConfiguration.change("mysql", "test");
         
         for (const eventType in SocketEventHandlerTypes) {
             const eventName = eventType.replace("Handler", "").toLowerCase();

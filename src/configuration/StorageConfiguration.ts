@@ -7,7 +7,7 @@ export default class DataSourceConfiguration {
 
     public static readonly connectionPool = new Map<string, Sequelize>();
 
-    public static async initialize(type: string, tenant: string): Promise<Sequelize> {
+    public static async change(type: string, tenant: string): Promise<Sequelize> {
         if (type === "mysql") {
             if (DataSourceConfiguration.connectionPool.get(tenant) === undefined) {
                 const sequelize = new Sequelize({

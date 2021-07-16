@@ -23,7 +23,7 @@ export default class WebServer {
     }
 
     public static async bootstrap(storageType: string) {
-        return new WebServer(await DataSourceConfiguration.initialize(storageType, "default"));
+        return new WebServer(await DataSourceConfiguration.change(storageType, "default"));
     }
 
     public async selectDataSource(req: Request, res: Response, next: NextFunction) {
@@ -33,7 +33,7 @@ export default class WebServer {
             return;
         }
 
-        this.sequelize = await DataSourceConfiguration.initialize("mysql", domain[0]);
+        this.sequelize = await DataSourceConfiguration.change("mysql", domain[0]);
         
         this.accountController = new AccountController(this.sequelize);
         this.roomController = new RoomController(this.sequelize);
