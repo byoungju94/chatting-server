@@ -3,13 +3,13 @@ import Account from "../domain/account/Account.model";
 import Message from "../domain/message/Message.model";
 import Room from "../domain/room/Room.model";
 
-export default class StorageConfiguration {
+export default class DataSourceConfiguration {
 
     public static readonly connectionPool = new Map<string, Sequelize>();
 
     public static async initialize(type: string, tenant: string): Promise<Sequelize> {
         if (type === "mysql") {
-            if (StorageConfiguration.connectionPool.get(tenant) === undefined) {
+            if (DataSourceConfiguration.connectionPool.get(tenant) === undefined) {
                 const sequelize = new Sequelize({
                     repositoryMode: true,
                     database: `chat_${tenant}`,
@@ -20,10 +20,10 @@ export default class StorageConfiguration {
                 });
                 sequelize.addModels([Account, Room, Message]);
 
-                StorageConfiguration.connectionPool.set(tenant, sequelize);
+                DataSourceConfiguration.connectionPool.set(tenant, sequelize);
             }
         }
 
-        return StorageConfiguration.connectionPool.get(tenant)!!;
+        return DataSourceConfiguration.connectionPool.get(tenant)!!;
     }
 }

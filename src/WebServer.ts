@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import { Sequelize } from "sequelize-typescript";
-import StorageConfiguration from "./configuration/StorageConfiguration";
+import DataSourceConfiguration from "./configuration/StorageConfiguration";
 import AccountController from "./controller/AccountController";
 import MessageController from "./controller/MessageController";
 import RoomController from "./controller/RoomController";
@@ -23,7 +23,7 @@ export default class WebServer {
     }
 
     public static async bootstrap(storageType: string) {
-        return new WebServer(await StorageConfiguration.initialize(storageType, "default"));
+        return new WebServer(await DataSourceConfiguration.initialize(storageType, "default"));
     }
 
     public async selectDataSource(req: Request, res: Response, next: NextFunction) {
@@ -33,7 +33,7 @@ export default class WebServer {
             return;
         }
 
-        this.sequelize = await StorageConfiguration.initialize("mysql", domain[0]);
+        this.sequelize = await DataSourceConfiguration.initialize("mysql", domain[0]);
         
         this.accountController = new AccountController(this.sequelize);
         this.roomController = new RoomController(this.sequelize);

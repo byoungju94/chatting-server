@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import http from "http";
 import * as io from "socket.io";
-import StorageConfiguration from "./configuration/StorageConfiguration"
+import DataSourceConfiguration from "./configuration/StorageConfiguration"
 import SocketHandlers from "./socket/SocketHandlers";
 import { SocketEventHandlerTypes } from './socket/SocketEventHandlerTypes';
 
@@ -24,7 +24,7 @@ export default class SocketServer {
     }
 
     public static async registerEventHandler(socket: io.Socket, tenant: string) {
-        const sequelize = await StorageConfiguration.initialize("mysql", "test");
+        const sequelize = await DataSourceConfiguration.initialize("mysql", "test");
         
         for (const eventType in SocketEventHandlerTypes) {
             const eventName = eventType.replace("Handler", "").toLowerCase();
