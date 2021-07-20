@@ -1,5 +1,9 @@
 # chatting-server
 
+## Architecture
+- Domain Driven Design
+- Event Sourcing
+
 ## dependencies
 - node.js
 - typescript
