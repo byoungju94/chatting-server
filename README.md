@@ -1,4 +1,5 @@
 # chatting-server
+- This is example of chatting-server. also has unit tests.
 
 ## Architecture
 - Domain Driven Design
