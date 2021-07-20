@@ -10,6 +10,9 @@
 - socket.io
 - sequelize
 
+## Install
+- `npm install`
+
 ## Unit Test
 - `npm run test`
 
