@@ -7,7 +7,7 @@
 - Test Driven Development
 
 ## dependencies
-- node.js
+- express
 - typescript
 - socket.io
 - sequelize
