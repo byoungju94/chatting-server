@@ -1,9 +1,10 @@
 # chatting-server
-- This is example of chatting-server. also has unit tests.
+- This is high scalability system design of realtime chatting server.
 
 ## Architecture
 - Domain Driven Design
 - Event Sourcing
+- Test Driven Development
 
 ## dependencies
 - node.js
